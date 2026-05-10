@@ -1,1 +1,1 @@
-# Planly
+# Plantly
