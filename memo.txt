@@ -1,0 +1,30 @@
+使う情報を抜き出す
+名前を引き抜く
+ー１日毎
+過去5日の合計降水量　rain_sum, showers_sum
+過去5日の天気　weather_code
+最高気温、最低気温　temperature_2m_max temperature_2m_min
+湿度？
+今日の日の出、日の入り時刻　sunrise, sunset
+日照時間　sunshine_duration (daylight_duration)
+uv_index_max???
+最大風速　wind_speed_10m_max
+蒸散値　evapotranspiration
+最高土中温度、最低土中温度　soil_temperture_???
+平均土中湿度
+
+ー1時間ごと
+気温　temperature_2m
+湿度　relative_humidity_2m
+降水確率　precipitation_probability
+降水量　precipitation
+rain, showers ???
+風速　wind_speed_10m
+天気　weather_code
+cloud_cover
+土中温度　soil_temperture_0cm, soil_temperture_6cm
+土中湿度　soil_moisture_0_to_1cm  soil_moisture_1_to_3cm
+
+
+それぞれに合うグラフを選んで出力
+それを並べて表示
