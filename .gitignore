@@ -1,0 +1,16 @@
+# Python cache
+__pycache__/
+*.pyc
+
+#txt
+memo.txt
+record.txt
+
+# Build
+build/
+dist/
+*.spec
+
+# OS
+.DS_Store
+Thumbs.db
