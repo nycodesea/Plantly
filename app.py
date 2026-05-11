@@ -14,7 +14,7 @@ params = {
 }
 
 data = requests.get(url, params=params).json()
-
+print(data)
 times = data["hourly"]["time"]
 temperatures = data["hourly"]["temperature_2m"]
 humidity = data["hourly"]["relative_humidity_2m"]
