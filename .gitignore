@@ -1,5 +1,5 @@
 # Cache
-*cache*
+.cache*
 # Python cache
 __pycache__/
 *.pyc
