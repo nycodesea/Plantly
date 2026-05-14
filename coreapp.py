@@ -41,7 +41,6 @@ params = {
     ],
     "timezone": "Asia/Tokyo",
     "past_days": 7,
-    "forecast_days": 0,
     "wind_speed_unit": "ms",
 }
 responses = openmeteo.weather_api(url, params=params)
@@ -72,12 +71,19 @@ daily_dataframe = pd.DataFrame(data=daily_data)
 print("\nDaily data\n", daily_dataframe)
 
 # Plotly
+display_days = 5
+
+daily_dataframe = daily_dataframe.tail(display_days)
 fig = px.bar(
     daily_dataframe,
     x="date",
     y="daily_precipitation_sum",
-    title="Past 7 Days Precipitation",
+    title="Past Precipitation",
 )
 
-fig.update_xaxes(dtick="D1")
+fig.update_xaxes(
+    dtick="D1",
+    tickformat="%-m/%-d",
+)
+fig.update_yaxes(title="Precipitation")
 fig.show()
