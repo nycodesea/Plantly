@@ -912,7 +912,7 @@ app.layout = html.Div(
         html.Div(
             [
                 # left
-                html.Div("植物指標"),
+                html.Div(""),
                 # center
                 html.Div(
                     [
@@ -935,12 +935,12 @@ app.layout = html.Div(
                         "justifyContent": "center",
                         "padding": "0",
                         "margin": "0",
-                        "width": "70%",
+                        "width": "100%",
                         "height": "100%",
                     },
                 ),
                 # right
-                html.Div("湿度・風・降水"),
+                html.Div(""),
             ],
             style={
                 "display": "flex",
@@ -948,7 +948,7 @@ app.layout = html.Div(
                 "alignItems": "stretch",
                 "backgroundColor": "#f3f1eb",
                 "borderRadius": "20px",
-                "padding": "20px",
+                "padding": "10px",
                 "marginTop": "40px",
                 "boxShadow": "0 4px 12px rgba(0,0,0,0.05)",
             },
