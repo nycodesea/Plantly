@@ -523,7 +523,7 @@ fig_today.add_trace(
         y=today_df["temperature_2m"],
         name="Temp",
         mode="lines",
-        line=dict(color="#7aa38b", width=2, shape="spline", smoothing=0.8),
+        line=dict(color="#6fa08a", width=3, shape="spline", smoothing=0.8),
         hovertemplate="%{y:.1f}℃<extra></extra>",
     ),
     row=1,
