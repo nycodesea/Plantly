@@ -223,7 +223,7 @@ WEATHER_ICONS = {
     "cloudy": "☁️",
     "fog": "🌫",
     "drizzle": "🌂",
-    "rain": "🌧",
+    "rain": "🌧️",
     "snow": "❄️",
     "thunder": "⚡",
 }

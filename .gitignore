@@ -8,7 +8,7 @@ __pycache__/
 build/
 dist/
 *.spec
-
+tempCodeRunnerFile.py
 # OS
 .DS_Store
 Thumbs.db
