@@ -293,8 +293,11 @@ fig2.update_xaxes(
         past_7days_df["date"].iloc[-5] - Timedelta(hours=12),
         past_7days_df["date"].iloc[-1] + Timedelta(hours=12),
     ],
+    zeroline=True,
+    zerolinecolor="rgba(0,0,0,0.06)",
+    zerolinewidth=0,
     showline=True,
-    linewidth=0.1,
+    linewidth=0,
 )
 y_max = max(
     past_7days_df["daily_precipitation_sum"].max(),
@@ -306,6 +309,12 @@ fig2.update_yaxes(
     griddash="dot",
     gridwidth=1,
     range=[0, y_max],
+    zeroline=True,
+    zerolinecolor="rgba(0,0,0,0.06)",
+    zerolinewidth=2,
+    showline=True,
+    linewidth=0.02,
+    linecolor="rgba(0,0,0,0.06)",
 )
 fig2.add_annotation(
     text="mm",
@@ -375,17 +384,18 @@ fig_future_temp.update_traces(
 )
 
 fig_future_temp.update_xaxes(
+    showline=True,
+    linecolor="rgba(0,0,0,0.06)",
     fixedrange=True,
     showgrid=False,
     zeroline=True,
+    zerolinecolor="rgba(0,0,0,0.1)",
     showticklabels=False,
     title=None,
     range=[
         future_7days_df["date"].iloc[0] - Timedelta(hours=12),
         future_7days_df["date"].iloc[-1] + Timedelta(hours=12),
     ],
-    showline=False,
-    linecolor="rgba(100,0,0,1)",
     showspikes=True,
     spikecolor="rgba(120,140,170,0.5)",
     spikethickness=1,
@@ -396,14 +406,16 @@ temp_min = future_7days_df["daily_temperature_2m_min"].min()
 temp_max = future_7days_df["daily_temperature_2m_max"].max()
 
 fig_future_temp.update_yaxes(
-    # zeroline=False,
-    # showticklabels=False,
     fixedrange=True,
     title=None,
     gridcolor="rgba(0,0,0,0.06)",
     griddash="dot",
     gridwidth=1,
     range=[temp_min - 1, temp_max + 3],
+    showline=True,
+    linewidth=0.02,
+    linecolor="rgba(0,0,0,0.06)",
+    zeroline=True,
 )
 # future 7days graph : precipitation Babble
 future_7days_df["label"] = [
@@ -500,7 +512,21 @@ fig_future_rain.update_yaxes(
     showticklabels=False,
     showgrid=False,
     zeroline=False,
-    showline=False,
+    showline=True,
+    linecolor="rgba(0,0,0,0.56)",
+)
+fig_future_rain.add_shape(
+    type="line",
+    xref="paper",
+    yref="paper",
+    x0=0,
+    x1=1,
+    y0=1,
+    y1=1,
+    line=dict(
+        color="rgba(0,0,0,0.08)",
+        width=1.5,
+    ),
 )
 
 # Today------------------------------------------------
@@ -710,7 +736,9 @@ fig_today.update_yaxes(
     ticksuffix="℃",
     gridcolor="rgba(0,0,0,0.05)",
     griddash="dot",
-    zeroline=False,
+    showline=True,
+    linewidth=0.02,
+    linecolor="rgba(0,0,0,0.06)",
     ticks="",
     ticklen=0,
     tickfont=dict(size=10),
@@ -729,9 +757,9 @@ fig_today.update_yaxes(
     ticksuffix="mm",
     range=[0, max(today_df["precipitation"].max() * 3, 5)],
     gridcolor="rgba(0,0,0,0.0)",
-    zeroline=False,
-    zerolinecolor="rgba(0,0,0,0.2)",  # シャープ黒
-    zerolinewidth=0.8,
+    zeroline=True,
+    zerolinecolor="rgba(0,0,0,0.1)",  # シャープ黒
+    zerolinewidth=0.1,
     ticks="",
     ticklen=0,
     tickfont=dict(size=10),
