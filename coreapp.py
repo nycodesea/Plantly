@@ -863,18 +863,6 @@ def format_time(x):
 
 rain_start_time = format_time(rain_start_time)
 
-# Output for Debug
-print(today_df)
-print(now)
-with open("record.txt", "w", encoding="utf-8") as f:
-    f.write("Past 7days Data\n")
-    f.write(past_7days_df.to_string())
-    f.write("\n\nTodays hourly Data\n")
-    f.write(today_df.to_string())
-    f.write("\n\nFuture 7days Data\n")
-    f.write(future_7days_df.to_string())
-
-
 # Dash-------------------------------------------
 app = Dash(
     __name__,
