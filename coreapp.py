@@ -261,6 +261,8 @@ fig2 = px.bar(
     custom_data=["daily_precipitation_sum"],
 )
 fig2.update_layout(
+    dragmode="zoom",
+    yaxis=dict(fixedrange=True),
     height=150,
     margin=dict(l=20, r=0, t=00, b=0),
     autosize=True,
@@ -300,7 +302,7 @@ fig2.update_xaxes(
     linewidth=0,
 )
 y_max = max(
-    past_7days_df["daily_precipitation_sum"].max(),
+    past_7days_df["daily_precipitation_sum"].max() + 1,
     5,
 )
 fig2.update_yaxes(
@@ -828,7 +830,52 @@ fig_today.add_vline(
     col=1,
 )
 
-# Dash
+
+# Information Card
+rain_5days = past_7days_df["daily_precipitation_sum"].tail(5).sum()
+df_12h = today_df[
+    (today_df["date"] >= now) & (today_df["date"] <= now + pd.Timedelta(hours=12))
+]
+temp_max_12h = df_12h["temperature_2m"].max()
+temp_min_12h = df_12h["temperature_2m"].min()
+
+current_row = today_df[
+    (today_df["date"] <= now) & (today_df["date"] > now - pd.Timedelta(minutes=30))
+].tail(1)
+
+is_raining_now = not current_row.empty and current_row["precipitation"].iloc[0] > 0
+rain_future = today_df[(today_df["date"] > now) & (today_df["precipitation"] > 0)]
+
+if is_raining_now:
+    rain_start_time = "now"
+elif not rain_future.empty:
+    rain_start_time = rain_future["date"].iloc[0]
+else:
+    rain_start_time = "not rain"
+
+
+def format_time(x):
+    if x in ["now", "not rain"]:
+        return x
+    dt = pd.to_datetime(x)
+    return f"{dt.month}/{dt.day} {dt:%H:%M}"
+
+
+rain_start_time = format_time(rain_start_time)
+
+# Output for Debug
+print(today_df)
+print(now)
+with open("record.txt", "w", encoding="utf-8") as f:
+    f.write("Past 7days Data\n")
+    f.write(past_7days_df.to_string())
+    f.write("\n\nTodays hourly Data\n")
+    f.write(today_df.to_string())
+    f.write("\n\nFuture 7days Data\n")
+    f.write(future_7days_df.to_string())
+
+
+# Dash-------------------------------------------
 app = Dash(
     __name__,
     external_stylesheets=[
@@ -997,17 +1044,58 @@ def display_today_hover(hoverData):
 # Dash---------------------------------------
 app.layout = html.Div(
     [
-        # Title Top-left
-        html.H1(
-            "PLANTly",
-            style={
-                "marginTop": "0",
-                "marginBottom": "10px",
-                "marginLeft": "16px",
-                "fontSize": "32px",
-                "fontWeight": "500",
-                "color": "#5f6f65",
-            },
+        # Most-Top
+        html.Div(
+            [
+                # Title Top-left
+                html.H1(
+                    "PLANTly",
+                    style={
+                        "marginTop": "0",
+                        "marginBottom": "10px",
+                        "marginLeft": "16px",
+                        "fontSize": "32px",
+                        "fontWeight": "500",
+                        "color": "#5f6f65",
+                    },
+                ),
+                # Info card Top-right
+                html.Div(
+                    [
+                        html.Div("💧Past 5days"),
+                        html.Div(f"{rain_5days:.0f} mm"),
+                        html.Div("🌡️Max 12h"),
+                        html.Div(
+                            f"{temp_max_12h:.1f} ℃",
+                            style={"color": "#e74c3c"},
+                        ),
+                        html.Div("🌡️Min 12h"),
+                        html.Div(
+                            f"{temp_min_12h:.1f} ℃",
+                            style={"color": "#4dabf7"},
+                        ),
+                        html.Div("🌂Rain start"),
+                        html.Div(f"{rain_start_time}"),
+                    ],
+                    style={
+                        "display": "grid",
+                        "gridTemplateColumns": "auto 1fr",
+                        "rowGap": "4px",
+                        "columnGap": "8px",
+                        "padding": "12px",
+                        "backgroundColor": "#f3f1eb",
+                        "borderRadius": "20px",
+                        "boxShadow": "0 2px 8px rgba(0, 0, 0, 0.1)",
+                        "width": "180px",
+                        "fontSize": "14px",
+                        "lineHeight": "1.2",
+                        "marginLeft": "auto",
+                        "position": "relative",
+                        "zIndex": 10,
+                    },
+                ),
+            ],
+            style={"display": "flex", "gap": "10px", "alignItems": "flex-start"},
         ),
         # Top
         html.Div(
