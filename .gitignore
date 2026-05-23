@@ -12,3 +12,10 @@ tempCodeRunnerFile.py
 # OS
 .DS_Store
 Thumbs.db
+
+#forDevelop
+record.txt
+memo.txt
+app.py
+testapp_2.py
+weather.py
