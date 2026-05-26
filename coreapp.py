@@ -304,8 +304,8 @@ fig2.update_xaxes(
     linecolor="rgba(0,0,0, 0.06)",
 )
 y_max = max(
-    past_7days_df["daily_precipitation_sum"].max() + 1,
-    5,
+    past_7days_df["daily_precipitation_sum"].max() + 2,
+    10,
 )
 fig2.update_yaxes(
     title=None,
@@ -839,7 +839,6 @@ fig_today.add_vline(
     col=1,
 )
 
-
 # Information Card
 rain_5days = past_7days_df["daily_precipitation_sum"].tail(5).sum()
 df_12h = today_df[
@@ -871,6 +870,25 @@ def format_time(x):
 
 
 rain_start_time = format_time(rain_start_time)
+
+# insight Card
+insight_title = "💧 水やり推奨"
+insight_text = (
+    f"ここ5日間の降水量は{rain_5days:.0f}mmです。"
+    f"今後12時間は最高{temp_max_12h:.0f}℃まで上がる予報です。"
+)
+
+if rain_start_time == "not rain" and rain_5days < 10:
+    insight_title = "💧 水やり推奨"
+    insight_text = "しばらく雨予報がなく、土が乾きやすい状況です。"
+
+elif rain_start_time != "not rain":
+    insight_title = "🌧️ 水やり不要"
+    insight_text = "雨が予想されているため、水やりは様子見で良さそうです。"
+
+else:
+    insight_title = "🌱 状態良好"
+    insight_text = "極端な乾燥や降雨は予想されていません。"
 
 # Dash-------------------------------------------
 app = Dash(
@@ -1059,37 +1077,69 @@ app.layout = html.Div(
         # Most-Top
         html.Div(
             [
-                # Title Top-left
+                # Title and insight card
                 html.Div(
                     [
-                        html.Img(
-                            src="assets/Plantly_icon.png",
+                        # Title Top-left
+                        html.Div(
+                            [
+                                html.Img(
+                                    src="assets/Plantly_icon.png",
+                                    style={
+                                        "width": "34px",
+                                        "height": "34px",
+                                        "marginLeft": "8px",
+                                        "marginBottom": "-10px",
+                                    },
+                                ),
+                                html.H1(
+                                    "PLANTly",
+                                    style={
+                                        "marginTop": "0",
+                                        "marginBottom": "-8px",
+                                        "marginLeft": "6px",
+                                        "fontSize": "38px",
+                                        "fontWeight": "500",
+                                        "color": "#5f6f65",
+                                    },
+                                ),
+                            ],
                             style={
-                                "width": "34px",
-                                "height": "34px",
-                                "marginLeft": "8px",
-                                "marginBottom": "-10px",
+                                "display": "flex",
+                                "alignItems": "center",
+                                "gap": "0px",
+                                "borderBottom": "4px solid rgba(120, 92, 62, 0.75)",
+                                "paddingBottom": "0",
                             },
                         ),
-                        html.H1(
-                            "PLANTly",
+                        html.Div(
+                            [
+                                html.Div(
+                                    insight_title,
+                                    style={
+                                        "fontSize": "16px",
+                                        "fontWeight": "500",
+                                        "color": "#5f6f65",
+                                    },
+                                ),
+                                html.Div(
+                                    insight_text,
+                                    style={
+                                        "fontSize": "14px",
+                                        "marginTop": "8px",
+                                        "lineHeight": "1.5",
+                                    },
+                                ),
+                            ],
                             style={
-                                "marginTop": "0",
-                                "marginBottom": "-8px",
-                                "marginLeft": "6px",
-                                "fontSize": "38px",
-                                "fontWeight": "500",
-                                "color": "#5f6f65",
+                                "backgroundColor": "#ece7dc",
+                                "padding": "14px 18px",
+                                "borderRadius": "20px",
+                                "marginTop": "10px",
+                                "boxShadow": "0 2px 8px rgba(0,0,0,0.05)",
                             },
                         ),
-                    ],
-                    style={
-                        "display": "flex",
-                        "alignItems": "center",
-                        "gap": "0px",
-                        "borderBottom": "4px solid rgba(120, 92, 62, 0.75)",
-                        "paddingBottom": "0",
-                    },
+                    ]
                 ),
                 # Info card Top-right
                 html.Div(
@@ -1211,7 +1261,7 @@ app.layout = html.Div(
             ],
             style={
                 "display": "flex",
-                "gap": "10px",
+                "gap": "15px",
             },
         ),
         # Bottom
@@ -1270,7 +1320,7 @@ app.layout = html.Div(
                 "backgroundColor": "#ece7dc",
                 "borderRadius": "20px",
                 "padding": "4px",
-                "marginTop": "10px",
+                "marginTop": "15px",
                 "boxShadow": "0 4px 12px rgba(0,0,0,0.05)",
             },
         ),
@@ -1279,7 +1329,8 @@ app.layout = html.Div(
         "backgroundColor": "#c7e3c7",
         "minHeight": "60vh",
         "borderRadius": "20px",
-        "padding": "14px",
+        "padding": "20px",
+        "margin": "0",
         "fontFamily": "Zen Maru Gothic",
         "position": "relative",
     },
