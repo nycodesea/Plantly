@@ -14,6 +14,8 @@ tempCodeRunnerFile.py
 Thumbs.db
 
 #forDevelop
+.venv/
+.env
 record.txt
 memo.txt
 app.py
