@@ -1,4 +1,4 @@
-# Plantly planet-force
+# Plantly
 import openmeteo_requests
 import pandas as pd
 from pandas import Timedelta
@@ -10,7 +10,6 @@ from dash import Dash, dcc, html, Input, Output, callback, no_update, ctx
 import numpy as np
 from plotly.subplots import make_subplots
 
-# Setup the Open-Meteo API client with cache and retry on error
 cache_session = requests_cache.CachedSession(".cache", expire_after=3600)
 retry_session = retry(cache_session, retries=5, backoff_factor=0.2)
 openmeteo = openmeteo_requests.Client(session=retry_session)
@@ -45,8 +44,7 @@ WEATHER_ICONS = {
     "snow": "❄️",
     "thunder": "⚡",
 }
-# Make sure all required weather variables are listed here
-# The order of variables in hourly or daily is important to assign them correctly below
+
 url = "https://api.open-meteo.com/v1/forecast"
 params = {
     "latitude": 35.6895,
@@ -137,7 +135,6 @@ def load_weather_data():
 
     daily_dataframe = pd.DataFrame(data=daily_data)
 
-    # Process hourly data.
     # Process hourly data
     hourly = response.Hourly()
 
@@ -156,31 +153,6 @@ def load_weather_data():
         freq=pd.Timedelta(seconds=hourly.Interval()),
         inclusive="left",
     ).tz_convert(response.Timezone().decode())
-
-    # Procdss current data.
-    # current = response.Current()
-    # current_temperature_2m = current.Variables(0).ValuesAsNumpy()
-    # "relative_humidity_2m"= current.Variables(1).ValuesAsNumpy()
-    # "is_day"= current.Variables(2).ValuesAsNumpy()
-    # "precipitation"= current.Variables(3).ValuesAsNumpy()
-    # "precipitation_probability"= current.Variables(4).ValuesAsNumpy()
-    # "rain"= current.Variables(5).ValuesAsNumpy()
-    # "showers"= current.Variables(6).ValuesAsNumpy()
-    # "snowfall"= current.Variables(7).ValuesAsNumpy()
-    # "weather_code"= current.Variables(8).ValuesAsNumpy()
-    # "cloud_cover"= current.Variables(9).ValuesAsNumpy()
-    # "wind_speed_10m"= current.Variables(10).ValuesAsNumpy()
-    # "evapotranspiration"= current.Variables(11).ValuesAsNumpy()
-    # "soil_temperature_0cm"= current.Variables(12).ValuesAsNumpy()
-    # "soil_temperature_6cm"= current.Variables(13).ValuesAsNumpy()
-    # "soil_temperature_18cm"= current.Variables(14).ValuesAsNumpy()
-    # "soil_moisture_0_to_1cm"= current.Variables(15).ValuesAsNumpy()
-    # "soil_moisture_1_to_3cm"= current.Variables(16).ValuesAsNumpy()
-    # "soil_moisture_3_to_9cm"= current.Variables(17).ValuesAsNumpy()
-    # "soil_moisture_9_to_27cm"= current.Variables(18).ValuesAsNumpy()
-    # "uv_index"= current.Variables(19).ValuesAsNumpy()
-    # "sunshine_duration"= current.Variables(20).ValuesAsNumpy()
-    # Weather codes
 
     daily_dataframe["weather_type"] = daily_dataframe["weather_code"].apply(
         get_weather_type
@@ -219,14 +191,6 @@ daily_dataframe = weather_data["daily_dataframe"]
 hourly_df = weather_data["hourly_df"]
 today = weather_data["today"]
 
-# print(
-#     "\nfuture 7days Precipitation probability\n",
-#     future_7days_df["daily_precipitation_probability_max"],
-# )
-# print("\nFuture 7days Precipitation\n", future_7days_df["daily_precipitation_sum"])
-# print("\nDaily data\n", daily_dataframe)
-# print("\nPast 7 Daily data\n", past_7days_df)
-
 
 # Plotly
 # Past 7days graph
@@ -256,7 +220,6 @@ def build_past7days_figure(past_7days_df):
                 size=11,
             ),
         ),
-        # hovermode="x unified",
     )
     fig2.update_traces(
         marker_color="#81b8be",
@@ -309,7 +272,7 @@ def build_past7days_figure(past_7days_df):
     return fig2
 
 
-# future 7days graph----------------------------------------------
+# future 7days graph
 # future 7days graph : temperture max - min
 def build_future7days_figure(future_7days_df):
     fig_future_temp = px.line(
@@ -466,7 +429,6 @@ def build_future7days_figure(future_7days_df):
             opacity=future_7days_df["bubble_opacity"],
         ),
         hovertemplate="<extra></extra>",
-        # ← hoverlabelを完全透明化
         hoverlabel=dict(
             bgcolor="rgba(0,0,0,0)",
             bordercolor="rgba(0,0,0,0)",
@@ -509,47 +471,17 @@ def build_future7days_figure(future_7days_df):
     return fig_future_temp, fig_future_rain
 
 
-# Today------------------------------------------------
+# Today(hourly) graph
 def build_today_figure(hourly_df):
-    now = pd.Timestamp.now(tz=TZ).normalize()
+    NOW = pd.Timestamp.now(tz=TZ)
+    NOW_HOUR = NOW.floor("h")
+    NOW_DAY = NOW.normalize()
 
     today_df = hourly_df.copy()
     today_df = today_df.reset_index(drop=True)
     today_df["x"] = today_df["date"]
     today_df["x_index"] = np.arange(len(today_df))
-    # for DEBUG --------------------------------------------
-    DEBUG_MODE = False
-    mode = "random_mix"
 
-    if DEBUG_MODE:
-
-        def make_debug_precip(n):
-            return {
-                "none": np.zeros(n),
-                "light": np.random.uniform(0, 1, n),
-                "medium": np.random.uniform(1, 3, n),
-                "heavy": np.random.uniform(3, 8, n),
-                "storm": np.random.uniform(5, 15, n),
-                "spike": np.concatenate(
-                    [
-                        np.zeros(n // 3),
-                        np.random.uniform(0, 2, n // 3),
-                        np.random.uniform(8, 15, n - 2 * (n // 3)),
-                    ]
-                ),
-                "wave": 5 + 4 * np.sin(np.linspace(0, 3 * np.pi, n)),
-                "random_mix": np.random.gamma(shape=2.0, scale=2.0, size=n),
-            }
-
-        patterns = make_debug_precip(len(today_df))
-
-        today_df["precipitation"] = patterns[mode]
-        today_df["precipitation_probability"] = np.clip(
-            today_df["precipitation"] * 15 + np.random.uniform(0, 20, len(today_df)),
-            0,
-            100,
-        )
-    # --------------------------------------------------------
     fig_today = make_subplots(
         rows=2,
         cols=1,
@@ -558,7 +490,7 @@ def build_today_figure(hourly_df):
         shared_xaxes=True,
         specs=[[{"secondary_y": True}], [{}]],
     )
-    # --- 気温（メインライン）---
+    # Temperature
     fig_today.add_trace(
         go.Scatter(
             x=today_df["date"],
@@ -579,7 +511,7 @@ def build_today_figure(hourly_df):
         secondary_y=False,
     )
 
-    # --- 雨（背景バー）---
+    # Rain bar
     fig_today.add_trace(
         go.Bar(
             x=today_df["date"],
@@ -596,18 +528,15 @@ def build_today_figure(hourly_df):
         secondary_y=True,
     )
 
-    # --- 降水確率（バブル）---
+    # Precipitation probability bubble
 
-    MAX_R = 20  # 最大バブル半径（px相当、sizeref で調整）
     bubble_size = 10 + today_df["precipitation_probability"] * 0.3
 
-    # 確率に応じた色（青の濃さ）
     bubble_colors = [
         f"rgba(129,184,190,{0.15 + (p / 100) * 0.85:.2f})"
         for p in today_df["precipitation_probability"]
     ]
 
-    # バブル内テキスト（20%以上のみ表示）
     bubble_text = [
         f"{int(p)}%" if p >= 20 else "" for p in today_df["precipitation_probability"]
     ]
@@ -635,8 +564,6 @@ def build_today_figure(hourly_df):
         col=1,
     )
 
-    # --- レイアウト ---
-    now = pd.Timestamp.now(tz=TZ)
     fig_today.update_layout(
         dragmode="zoom",
         height=300,
@@ -651,14 +578,12 @@ def build_today_figure(hourly_df):
         xaxis=dict(hoverformat="%-m/%-d %-H:%M"),
     )
 
-    # ── X軸（上：非表示 / 下：時刻ラベル） ───────────────────────────────
     today_df["weather_type"] = today_df["weather_code"].apply(get_weather_type)
 
     today_df["weather_icon"] = today_df["weather_type"].map(WEATHER_ICONS)
 
     today_df["hour"] = today_df["date"].dt.hour
 
-    # ④ label（ここで全部使う）
     today_df["x_label"] = (
         today_df["date"].dt.strftime("%H:%M").str.replace("^0", "", regex=True)
         + "<br>"
@@ -682,7 +607,7 @@ def build_today_figure(hourly_df):
         spikemode="across",
         zeroline=True,
         zerolinecolor="rgba(0,0,0,1)",
-        linewidth=1,  # シャープ黒
+        linewidth=1,
     )
     fig_today.update_xaxes(
         row=2,
@@ -697,17 +622,17 @@ def build_today_figure(hourly_df):
         tickvals=today_df["date"],
         ticktext=today_df["x_label"],
         tickfont=dict(size=14),
-        ticks="",  # 目盛り線は無し
-        ticklen=0,  # 目盛り線の長さを0にして完全に消す
-        showline=False,  # ← 軸ライン出す！
-        linecolor="rgba(0,0,0,0.15)",  # 薄グレー
+        ticks="",
+        ticklen=0,
+        showline=False,
+        linecolor="rgba(0,0,0,0.15)",
         linewidth=1,
         showgrid=False,
         zeroline=False,
         fixedrange=False,
-        range=[now - pd.Timedelta(hours=2), now + pd.Timedelta(hours=16)],
+        range=[NOW_HOUR - pd.Timedelta(hours=2), NOW_HOUR + pd.Timedelta(hours=16)],
     )
-    # 気温（左）
+    # temperature y-axis left
     fig_today.update_yaxes(
         fixedrange=True,
         title=None,
@@ -736,7 +661,7 @@ def build_today_figure(hourly_df):
         range=[0, max(today_df["precipitation"].max() * 3, 5)],
         gridcolor="rgba(0,0,0,0.0)",
         zeroline=True,
-        zerolinecolor="rgba(0,0,0,0.1)",  # シャープ黒
+        zerolinecolor="rgba(0,0,0,0.1)",
         zerolinewidth=0.06,
         ticks="",
         ticklen=0,
@@ -755,6 +680,7 @@ def build_today_figure(hourly_df):
         zeroline=False,
         range=[-0.01, 0.01],
     )
+    # bubble background for precipitation
     fig_today.add_shape(
         type="rect",
         xref="x",
@@ -763,28 +689,9 @@ def build_today_figure(hourly_df):
         x1=today_df["date"].iloc[-1],
         y0=-1,
         y1=0,
-        fillcolor="rgba(90,160,220,0.05)",
+        fillcolor="rgba(90,160,220,0.08)",
         line_width=0,
     )
-    # ── 「mm」「℃」アノテーション ────────────────────────────────────────
-    # fig_today.add_annotation(
-    #     text="℃",
-    #     xref="paper",
-    #     yref="paper",
-    #     x=0,
-    #     y=1.02,
-    #     showarrow=False,
-    #     font=dict(size=10, color="#9aaa9f"),
-    # )
-    # fig_today.add_annotation(
-    #     text="mm",
-    #     xref="paper",
-    #     yref="paper",
-    #     x=1,
-    #     y=1.02,
-    #     showarrow=False,
-    #     font=dict(size=10, color="#9aaa9f"),
-    # )
     fig_today.add_annotation(
         text="",
         xref="paper",
@@ -795,10 +702,9 @@ def build_today_figure(hourly_df):
         font=dict(size=10, color="#9aaa9f"),
         xanchor="left",
     )
-    # ── 現在時刻の縦線 ────────────────────────────────────────────────────
-    now = pd.Timestamp.now(tz=TZ).floor("h")
+    # vertical line for current time
     fig_today.add_vline(
-        x=now,
+        x=NOW_HOUR,
         line_width=1,
         line_dash="dash",
         line_color="rgba(120,140,170,0.45)",
@@ -809,20 +715,31 @@ def build_today_figure(hourly_df):
 
 
 # Information Card
-def build_info_card(past_7days_df, today_df, now):
+def build_info_card(past_7days_df, today_hourly_df, now):
     rain_5days = past_7days_df["precipitation_sum"].tail(5).sum()
-    df_12h = today_df[
-        (today_df["date"] >= now) & (today_df["date"] <= now + pd.Timedelta(hours=12))
+    df_12h = today_hourly_df[
+        (today_hourly_df["date"] >= now)
+        & (today_hourly_df["date"] <= now + pd.Timedelta(hours=12))
     ]
-    temp_max_12h = df_12h["temperature_2m"].max()
-    temp_min_12h = df_12h["temperature_2m"].min()
+    if df_12h.empty:
+        temp_max_12h = np.nan
+    else:
+        temp_max_12h = df_12h["temperature_2m"].max()
 
-    current_row = today_df[
-        (today_df["date"] <= now) & (today_df["date"] > now - pd.Timedelta(minutes=30))
+    if df_12h.empty:
+        temp_min_12h = np.nan
+    else:
+        temp_min_12h = df_12h["temperature_2m"].min()
+
+    current_row = today_hourly_df[
+        (today_hourly_df["date"] <= now)
+        & (today_hourly_df["date"] > now - pd.Timedelta(minutes=30))
     ].tail(1)
 
     is_raining_now = not current_row.empty and current_row["precipitation"].iloc[0] > 0
-    rain_future = today_df[(today_df["date"] > now) & (today_df["precipitation"] > 0)]
+    rain_future = today_hourly_df[
+        (today_hourly_df["date"] > now) & (today_hourly_df["precipitation"] > 0)
+    ]
 
     if is_raining_now:
         rain_start_time = "now"
@@ -841,30 +758,31 @@ def build_info_card(past_7days_df, today_df, now):
     return rain_5days, temp_max_12h, temp_min_12h, rain_start_time
 
 
-# insight Card--------------------------
+# insight Card
 def build_insight_card(
     rain_start_time, rain_5days, temp_max_12h, daily_dataframe, today
 ):
     # insight Water
-    insight_water_title = "💧 水やり : "
+    insight_water_title = "💧 Watering : "
     insight_water_text = (
-        f"ここ5日間の降水量は{rain_5days:.0f}mmです。"
-        f"今後12時間は最高{temp_max_12h:.0f}℃まで上がる予報です。"
+        f"The total precipitation over the last 5 days is {rain_5days:.0f}mm."
+        f"Over the next 12 hours, the temperature is expected to reach up to {temp_max_12h:.0f}℃."
     )
 
     if rain_start_time == "not rain" and rain_5days < 10:
-        insight_water_title = "💧 水やり推奨 : "
-        insight_water_text = "しばらく雨予報がなく、土が乾きやすい状況です。"
+        insight_water_title = "💧 Watering Recommended : "
+        insight_water_text = (
+            "No rain forecast for a while, and the soil is prone to drying out."
+        )
 
     elif rain_start_time != "not rain":
-        insight_water_title = "🌧️ 水やり不要 : "
-        insight_water_text = "雨が予想されているため、水やりは様子見で良さそうです。"
+        insight_water_title = "🌧️ No Need to Water : "
+        insight_water_text = "Rain is forecast, so watering can be skipped for now."
 
     else:
-        insight_water_title = "🌱 状態良好 : "
-        insight_water_text = "極端な乾燥や降雨は予想されていません。"
-
-    # insight Soloar-ray
+        insight_water_title = "🌱 Good Conditions : "
+        insight_water_text = "No extreme drought or rainfall expected."
+    # insight Solar-ray
     today_uv = daily_dataframe.loc[
         daily_dataframe["date"].dt.normalize() == today,
         "uv_index_max",
@@ -878,12 +796,13 @@ def build_insight_card(
         insight_solar_text = "Danger⚡"
     elif today_uv > 5:
         insight_solar_title = "⛱️UV : "
-        insight_solar_text = "注意⚠️"
+        insight_solar_text = "Careful⚠️"
     else:
         insight_solar_title = "⛱️UV : "
         insight_solar_text = "👌"
 
     # insight some peaky scores
+
     return (
         insight_water_title,
         insight_water_text,
@@ -892,7 +811,7 @@ def build_insight_card(
     )
 
 
-# Dash-------------------------------------------
+# Dash
 app = Dash(
     __name__,
     external_stylesheets=[
@@ -1093,9 +1012,6 @@ def display_today_hover(hoverData):
     Input("interval-component", "n_intervals"),
 )
 def update_data(n):
-
-    print("updating...")
-
     weather_data = load_weather_data()
 
     past_7days_df = weather_data["past_7days_df"]
@@ -1183,7 +1099,7 @@ now = pd.Timestamp.now(tz=TZ)
     daily_dataframe,
     today,
 )
-# Dash---------------------------------------
+# Dash layout
 app.layout = html.Div(
     [
         dcc.Interval(
@@ -1225,7 +1141,7 @@ app.layout = html.Div(
                                 "display": "flex",
                                 "alignItems": "center",
                                 "gap": "0px",
-                                "borderBottom": "4px solid rgba(120, 92, 62, 0.75)",
+                                "borderBottom": "4px solid rgba(120, 92, 62, 0.65)",
                                 "paddingBottom": "0",
                             },
                         ),
@@ -1304,7 +1220,7 @@ app.layout = html.Div(
             ],
             style={"display": "flex", "gap": "10px", "alignItems": "flex-start"},
         ),
-        # Top
+        # Top graphs
         html.Div(
             [
                 # Left
@@ -1388,11 +1304,11 @@ app.layout = html.Div(
                 "gap": "15px",
             },
         ),
-        # Bottom
+        # Bottom Graph
         html.Div(
             [
                 # left
-                html.Div(""),
+                # html.Div(""),
                 # center
                 html.Div(
                     [
@@ -1435,7 +1351,7 @@ app.layout = html.Div(
                     },
                 ),
                 # right
-                html.Div(""),
+                # html.Div(""),
             ],
             style={
                 "display": "flex",
