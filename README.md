@@ -12,7 +12,7 @@ Plantly analyzes weather forecasts and recent rainfall data to provide simple in
 
 ---
 
-# 🌿 Features
+## 🌿 Features
 
 - 🌦 Real-time weather data from Open-Meteo
 - 📊 Hourly + daily interactive graphs
@@ -23,7 +23,7 @@ Plantly analyzes weather forecasts and recent rainfall data to provide simple in
 - 🔄 Auto-refresh every hour
 
 ---
-🚀 Getting Started
+## 🚀 Getting Started
 Requirements
 Python 3.11+
 Internet connection
@@ -60,13 +60,12 @@ http://localhost:8050
 - [Pandas](https://pandas.pydata.org/) - Data processing
 - [NumPy](https://numpy.org/) — Numerical calculations
 ---
-
-📈 Data Source
+## 📈 Data Source
 
 Weather data provided by Open-Meteo:
 
 https://open-meteo.com/
 
-📄 License
+## 📄 License
 
 MIT License
