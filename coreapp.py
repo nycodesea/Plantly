@@ -975,9 +975,11 @@ app.layout = html.Div(
                             style={
                                 "display": "flex",
                                 "alignItems": "center",
+                                "width": "fit-content",
                                 "gap": "0px",
                                 "borderBottom": "4px solid rgba(120, 92, 62, 0.65)",
                                 "paddingBottom": "0",
+                                "paddingRight": "8px",
                             },
                         ),
                         html.Div(
