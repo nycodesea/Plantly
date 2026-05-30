@@ -28,7 +28,7 @@ Plantly analyzes weather forecasts and recent rainfall data to provide simple in
 
 ### Installation
 ```bash
-git clone https://github.com/yourname/Plantly.git
+git clone https://github.com/nycodesea/Plantly.git
 cd Plantly
 ```
 Install dependencies:
