@@ -14,40 +14,46 @@ Plantly analyzes weather forecasts and recent rainfall data to provide simple in
 
 - 🌦 Real-time weather data from Open-Meteo
 - 📊 Hourly + daily interactive graphs
-- 💧 Watering suggestion based on recent rainfall
-- 🌡 Showing temperature summary next 12 hours
+- 💧 Watering recommendations based on recent rainfall
+- 🌡 Temperature summary for the next 12 hours
 - ☔ Rain forecast with probability visualization
 - ⚡ UV risk indicator
 - 🔄 Auto-refresh every hour
 
 
 ## 🚀 Getting Started
-Requirements
+###requirements
 Python 3.11+
 Internet connection
-Installation
 
-Clone the repository:
-
+### Installation
+```bash
 git clone https://github.com/yourname/Plantly.git
 cd Plantly
-
+```
 Install dependencies:
-
+```bash
 pip install -r requirements.txt
-Configuration
+```
+### Configuration
 
 Edit config.py and set your location:
 
+```python
 LATITUDE = 35.68
 LONGITUDE = 139.76
 TIMEZONE = "Asia/Tokyo"
-Run
+```
+
+### Run
+```bash
 python coreapp.py
+```
 
 Then open:
-
+```text
 http://localhost:8050
+```
 
 ## Built With
 
