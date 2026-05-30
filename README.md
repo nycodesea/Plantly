@@ -22,7 +22,7 @@ Plantly analyzes weather forecasts and recent rainfall data to provide simple in
 
 
 ## 🚀 Getting Started
-###requirements
+### requirements 
 Python 3.11+
 Internet connection
 
