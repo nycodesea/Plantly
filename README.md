@@ -3,12 +3,14 @@
 A weather-powered dashboard that helps you make better plant care decisions.
 
 Plantly analyzes weather forecasts and recent rainfall data to provide simple insights about watering, temperature, rain, and UV conditions.
+
 ---
 
 ## 🖼️ Screenshot
 
-![Plantly icon image](assets/Plantly_icon.png)
 ![Plantly Screenshot](assets/screenshot.png)
+
+---
 
 # 🌿 Features
 
@@ -48,6 +50,7 @@ python coreapp.py
 Then open:
 
 http://localhost:8050
+
 ---
 ## Built With
 
@@ -57,6 +60,7 @@ http://localhost:8050
 - [Pandas](https://pandas.pydata.org/) - Data processing
 - [NumPy](https://numpy.org/) — Numerical calculations
 ---
+
 📈 Data Source
 
 Weather data provided by Open-Meteo:
