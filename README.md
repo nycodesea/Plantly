@@ -62,6 +62,7 @@ http://localhost:8050
 Weather data provided by Open-Meteo:
 
 https://open-meteo.com/
+
 ---
 ## 📄 License
 
