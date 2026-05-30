@@ -218,7 +218,7 @@ def build_future7days_figure(future_7days_df):
     ]
     max_precipitation = future_7days_df["precipitation_sum"].max()
     future_7days_df["bubble_size"] = (
-        future_7days_df["precipitation_sum"] + 40 if max_precipitation > 0 else 0
+        future_7days_df["precipitation_sum"] + 60 if max_precipitation > 0 else 0
     )
 
     future_7days_df["bubble_text"] = future_7days_df[
@@ -258,7 +258,7 @@ def build_future7days_figure(future_7days_df):
         ),
     )
     fig_future_rain.update_traces(
-        textfont_size=15,
+        textfont_size=12,
         textfont_color="white",
         textposition="middle center",
         marker=dict(
