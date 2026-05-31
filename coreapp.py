@@ -108,7 +108,6 @@ def display_hover_card(temp_hover, rain_hover):
                     style={
                         "display": "flex",
                         "justifyContent": "center",
-                        # "gap": "4px",
                         "fontSize": "12px",
                         "lineHeight": "1.4",
                     },
