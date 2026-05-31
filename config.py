@@ -5,11 +5,9 @@ URL = "https://api.open-meteo.com/v1/forecast"
 
 # Timezone
 TZ = "Asia/Tokyo"
-NOW = pd.Timestamp.now(tz=TZ)
-NOW_HOUR = NOW.floor("h")
-NOW_DAY = NOW.normalize()
 LATITUDE = 35.6895
 LONGITUDE = 139.6917
+REFRESH_INTERVAL = 60 * 60 * 1000
 # Weather codes
 WEATHER_GROUPS = {
     "sunny": [0],
