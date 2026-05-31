@@ -32,10 +32,6 @@ git clone https://github.com/nycodesea/Plantly.git
 cd Plantly
 uv sync
 ```
-or
-```bash
-pip install -r requirements.txt
-```
 ### Configuration
 
 Edit config.py and set your location:
@@ -48,7 +44,7 @@ TIMEZONE = "Asia/Tokyo"
 
 ### Run
 ```bash
-python coreapp.py
+uv run python coreapp.py
 ```
 
 Then open:
