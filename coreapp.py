@@ -1,31 +1,17 @@
 # Plantly
-import openmeteo_requests
+
 import pandas as pd
-from pandas import Timedelta
-import requests_cache
-from retry_requests import retry
-import plotly.express as px
-import plotly.graph_objects as go
-from dash import Dash, dcc, html, Input, Output, callback, no_update, ctx
-import numpy as np
-from plotly.subplots import make_subplots
+from dash import Dash, html, Input, Output, no_update, ctx
 from layout import create_layout
 from graphs import (
     build_past7days_figure,
     build_future7days_figure,
     build_today_figure,
 )
-from config import (
-    URL,
-    TZ,
-    WEATHER_GROUPS,
-    WEATHER_ICONS,
-    API_PARAMS,
-    REFRESH_INTERVAL,
-)
 import weather
 from utils import get_now
 from cards import build_info_card, build_insight_card
+from config import TZ
 
 weather_data = weather.load_weather_data()
 
@@ -34,32 +20,6 @@ future_7days_df = weather_data["future_7days_df"]
 daily_dataframe = weather_data["daily_dataframe"]
 hourly_df = weather_data["hourly_df"]
 today = weather_data["today"]
-
-
-# make Graphs
-fig_past = build_past7days_figure(past_7days_df)
-fig_future_temp, fig_future_rain = build_future7days_figure(future_7days_df, today)
-fig_today = build_today_figure(hourly_df)
-
-# get time
-time_info = get_now()
-now = time_info["now"]
-now_hour = time_info["hour"]
-now_day = time_info["day"]
-
-# Cards
-# Information Card
-rain_5days, temp_max_12h, temp_min_12h, rain_start_time = build_info_card(
-    past_7days_df, hourly_df, now
-)
-
-
-# insight Card
-insight_water_title, insight_water_text, insight_solar_title, insight_solar_text = (
-    build_insight_card(
-        rain_start_time, rain_5days, temp_max_12h, daily_dataframe, today
-    )
-)
 
 # Dash
 app = Dash(
@@ -166,10 +126,6 @@ def display_hover_card(temp_hover, rain_hover):
     Input("today-graph", "hoverData"),
 )
 def display_today_hover(hoverData):
-    time_info = get_now()
-    now = time_info["now"]
-    now_hour = time_info["hour"]
-    now_day = time_info["day"]
     if not hoverData:
         return False, no_update, no_update
 
@@ -185,7 +141,6 @@ def display_today_hover(hoverData):
         date = date.tz_localize(TZ)
     else:
         date = date.tz_convert(TZ)
-    global hourly_df
     matched = hourly_df[hourly_df["date"].dt.floor("h") == date.floor("h")]
 
     if matched.empty:
@@ -275,10 +230,7 @@ def update_data(n):
     today = weather_data["today"]
 
     # get time
-    time_info = get_now()
-    now = time_info["now"]
-    now_hour = time_info["hour"]
-    now_day = time_info["day"]
+    now = get_now()["now"]
 
     # graph rebuild
     fig_past = build_past7days_figure(past_7days_df)
@@ -331,10 +283,7 @@ fig_past = build_past7days_figure(past_7days_df)
 fig_future_temp, fig_future_rain = build_future7days_figure(future_7days_df, today)
 fig_today = build_today_figure(hourly_df)
 
-time_info = get_now()
-now = time_info["now"]
-now_hour = time_info["hour"]
-now_day = time_info["day"]
+now = get_now()["now"]
 # Initial info card
 (
     rain_5days,
@@ -347,7 +296,7 @@ now_day = time_info["day"]
     now,
 )
 
-# Initial insight
+# Initial insight card
 (
     insight_water_title,
     insight_water_text,
