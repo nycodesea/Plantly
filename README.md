@@ -34,12 +34,14 @@ uv sync
 ```
 ### Configuration
 
-Edit config.py and set your location:
+Edit settings.json and set your location:
 
-```python
-LATITUDE = 35.6
-LONGITUDE = 139.7
-TIMEZONE = "Asia/Tokyo"
+```JSON
+{
+    "timezone": "Asia/Tokyo",
+    "latitude": 35.6,
+    "longitude": 139.6
+}
 ```
 
 ### Run
