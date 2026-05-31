@@ -322,8 +322,8 @@ app.layout = create_layout(
     rain_start_time,
 )
 # for Debug
-app.run(debug=True)
+# app.run(debug=True)
 
 # for Server
-# if __name__ == "__main__":
-#     app.run(debug=False, host="0.0.0.0", port=8050)
+if __name__ == "__main__":
+    app.run(debug=False, host="0.0.0.0", port=8050)
