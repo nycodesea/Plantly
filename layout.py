@@ -251,7 +251,6 @@ def create_layout(
                             ),
                             dcc.Tooltip(
                                 id="today-tooltip",
-                                # direction="top",
                                 style={
                                     "zIndex": 9999,
                                     "backgroundColor": "rgba(255,255,255,0.95)",
