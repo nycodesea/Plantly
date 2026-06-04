@@ -11,6 +11,7 @@ body {
   /* Container */
   .app-container {
     margin: 0;
+    padding: 0px 40px 10px 5px !important;
   }
 
   /* title and cards */
@@ -40,6 +41,7 @@ body {
 
   .Lower-graph {
     flex-direction: column ;
+    width: 100% !important;
   }
 
 }
