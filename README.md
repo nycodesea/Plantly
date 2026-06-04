@@ -20,6 +20,9 @@ Plantly analyzes weather forecasts and recent rainfall data to provide simple in
 - ⚡ UV risk indicator
 - 🔄 Auto-refresh every hour
 
+Weather data is stored locally as daily snapshots (previous day data) for future analysis purposes.
+Displayed weather remains real-time/current-day data.
+
 
 ## 🚀 Getting Started
 ### Requirements 
