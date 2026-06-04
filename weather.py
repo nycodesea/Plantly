@@ -34,9 +34,13 @@ def process_daily_data(response):
     daily = response.Daily()
     daily_vars = API_PARAMS["daily"]
 
-    daily_data = {
-        var: daily.Variables(i).ValuesAsNumpy() for i, var in enumerate(daily_vars)
-    }
+    daily_data = {}
+
+    for i, var in enumerate(daily_vars):
+        if var in {"sunrise", "sunset"}:
+            daily_data[var] = daily.Variables(i).ValuesInt64AsNumpy()
+        else:
+            daily_data[var] = daily.Variables(i).ValuesAsNumpy()
 
     daily_data["date"] = pd.date_range(
         start=pd.to_datetime(daily.Time(), unit="s", utc=True),
@@ -56,7 +60,17 @@ def process_daily_data(response):
         + "<br>"
         + daily_dataframe["weather_icon"]
     )
+    daily_dataframe["sunrise"] = (
+        pd.to_datetime(daily_dataframe["sunrise"], unit="s", utc=True)
+        .dt.tz_convert(TZ)
+        .dt.strftime("%H:%M")
+    )
 
+    daily_dataframe["sunset"] = (
+        pd.to_datetime(daily_dataframe["sunset"], unit="s", utc=True)
+        .dt.tz_convert(TZ)
+        .dt.strftime("%H:%M")
+    )
     return daily_dataframe
 
 
