@@ -10,7 +10,10 @@ from graphs import (
 import weather
 from utils import get_now
 from cards import build_info_card, build_insight_card
-from database import init_db, save_yesterday_weather
+from database import (
+    init_db,
+    save_missing_7days,
+)
 
 weather_data = weather.load_weather_data()
 
@@ -84,5 +87,5 @@ app.layout = create_layout(
 # for Server
 if __name__ == "__main__":
     init_db()
-    save_yesterday_weather(past_7days_df)
+    save_missing_7days(past_7days_df)
     app.run(debug=False, host="0.0.0.0", port=8050)

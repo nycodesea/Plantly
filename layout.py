@@ -238,6 +238,7 @@ def create_layout(
                         [
                             dcc.Graph(
                                 figure=fig_today,
+                                id="today-graph",
                                 clear_on_unhover=True,
                                 style={
                                     "height": "400px",
@@ -250,7 +251,6 @@ def create_layout(
                             ),
                             dcc.Tooltip(
                                 id="today-tooltip",
-                                # direction="top",
                                 style={
                                     "zIndex": 9999,
                                     "backgroundColor": "rgba(255,255,255,0.95)",
@@ -260,7 +260,7 @@ def create_layout(
                                 },
                             ),
                         ],
-                        id="today-graph",
+                        id="today-graph-container",
                         style={
                             "display": "flex",
                             "flexDirection": "column",
