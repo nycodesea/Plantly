@@ -70,7 +70,7 @@ http://localhost:8050
 
 ## 📈 Data Source
 
-Weather data provided by Open-Meteo:
+Weather data provided by Open-Meteo (CC BY 4.0)
 
 https://open-meteo.com/
 
