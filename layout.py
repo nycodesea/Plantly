@@ -243,7 +243,7 @@ def create_layout(
                                 style={
                                     "height": "400px",
                                     "width": "100%",
-                                    "padding": "10px",
+                                    "padding": "0px",
                                     "margin": "0",
                                 },
                                 config={"displayModeBar": False, "displaylogo": False},
