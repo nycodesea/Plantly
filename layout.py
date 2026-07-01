@@ -89,6 +89,8 @@ def create_layout(
                                     "borderRadius": "20px",
                                     "marginTop": "10px",
                                     "boxShadow": "0 2px 8px rgba(0,0,0,0.05)",
+                                    "position": "relative",
+                                    "zIndex": 10,
                                 },
                             ),
                         ]
